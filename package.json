@@ -1,0 +1,39 @@
+{
+    "name": "trail-client",
+    "description": "Distributed tracing client for Node.js",
+    "repository": "CatTail/node-trail-client",
+    "version": "0.0.0",
+    "keywords": [
+    ],
+    "files": [
+        "dist"
+    ],
+    "devDependencies": {
+        "babel-cli": "^6.7.7",
+        "babel-eslint": "^6.0.4",
+        "babel-plugin-transform-async-to-generator": "^6.8.0",
+        "babel-plugin-transform-es2015-destructuring": "^6.8.0",
+        "babel-plugin-transform-es2015-modules-commonjs": "^6.8.0",
+        "babel-plugin-transform-es2015-parameters": "^6.8.0",
+        "eslint-plugin-babel": "^3.2.0",
+        "isparta": "^4.0.0",
+        "mocha": "^2.4.5",
+        "opentracing": "^0.9.18",
+        "should": "^8.3.1"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "debug": "^2.2.0"
+    },
+    "scripts": {
+        "debug": "./node_modules/.bin/mocha --debug-brk --require should test",
+        "build": "babel src -d dist",
+        "lint": "eslint .",
+        "test": "NODE_ENV=test babel-node ./node_modules/.bin/_mocha --reporter spec $npm_package_options_mocha",
+        "test-cov": "NODE_ENV=test babel-node ./node_modules/.bin/isparta cover --root src --report html _mocha -- $npm_package_options_mocha",
+        "test-travis": "NODE_ENV=test babel-node ./node_modules/.bin/isparta cover --root src --report lcovonly _mocha -- $npm_package_options_mocha"
+    },
+    "options": {
+        "mocha": "--require ./resources/mocha-bootload --check-leaks --full-trace src/**/__tests__/**/*-test.js"
+    }
+}
