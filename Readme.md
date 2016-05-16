@@ -4,7 +4,11 @@
 
 ## Installation
 
+    npm install --save trail-client
+
 ## Usage
+
+See [tests](src/__tests__/client-test.js)
 
 ## License
 

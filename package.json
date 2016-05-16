@@ -3,8 +3,8 @@
     "description": "Distributed tracing client for Node.js",
     "repository": "CatTail/node-trail-client",
     "version": "0.0.0",
-    "keywords": [
-    ],
+    "main": "dist/index.js",
+    "keywords": [],
     "files": [
         "dist"
     ],
@@ -23,17 +23,20 @@
     },
     "license": "MIT",
     "dependencies": {
+        "basictracer": "^0.1.0",
+        "continuation-local-storage": "^3.1.7",
         "debug": "^2.2.0"
     },
     "scripts": {
-        "debug": "./node_modules/.bin/mocha --debug-brk --require should test",
-        "build": "babel src -d dist",
+        "debug": "mocha --debug-brk $npm_package_options_mocha",
+        "build": "babel src -d dist --copy-files",
+        "watch": "babel src -d dist --copy-files -w",
         "lint": "eslint .",
-        "test": "NODE_ENV=test babel-node ./node_modules/.bin/_mocha --reporter spec $npm_package_options_mocha",
-        "test-cov": "NODE_ENV=test babel-node ./node_modules/.bin/isparta cover --root src --report html _mocha -- $npm_package_options_mocha",
-        "test-travis": "NODE_ENV=test babel-node ./node_modules/.bin/isparta cover --root src --report lcovonly _mocha -- $npm_package_options_mocha"
+        "test": "NODE_ENV=test ./node_modules/.bin/_mocha --reporter spec $npm_package_options_mocha",
+        "test-cov": "NODE_ENV=test isparta cover --root dist --report html _mocha -- $npm_package_options_mocha",
+        "test-travis": "NODE_ENV=test isparta cover --root dist --report lcovonly _mocha -- $npm_package_options_mocha"
     },
     "options": {
-        "mocha": "--require ./resources/mocha-bootload --check-leaks --full-trace src/**/__tests__/**/*-test.js"
+        "mocha": "--require ./resources/mocha-bootload --check-leaks --full-trace dist/**/__tests__/**/*-test.js"
     }
 }
