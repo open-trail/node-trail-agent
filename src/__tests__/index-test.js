@@ -130,6 +130,6 @@ describe('Client', () => {
         should(imp.spanId.equals(parentImp.spanId)).not.be.ok()
         should(imp.parentId.equals(parentImp.spanId)).be.ok()
         should(imp.sampled).eql(parentImp.sampled)
-        should(imp.baggage).not.be.ok()
+        should(imp.baggage).be.type('object')
     })
 })
