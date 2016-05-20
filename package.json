@@ -2,7 +2,7 @@
   "name": "trail-client",
   "description": "Distributed tracing client for Node.js",
   "repository": "CatTail/node-trail-client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist/index.js",
   "keywords": [],
   "files": [
@@ -18,7 +18,7 @@
     "chai": "^3.5.0",
     "dnode": "^1.2.2",
     "eslint-plugin-babel": "^3.2.0",
-    "isparta": "^4.0.0",
+    "istanbul": "^0.4.3",
     "mocha": "^2.4.5",
     "opentracing": "^0.9.18",
     "redis": "^2.6.0-2",
@@ -30,8 +30,7 @@
   "dependencies": {
     "basictracer": "^0.4.0",
     "continuation-local-storage": "^3.1.7",
-    "debug": "^2.2.0",
-    "long": "^3.1.0"
+    "debug": "^2.2.0"
   },
   "scripts": {
     "debug": "mocha --debug-brk $npm_package_options_mocha",
@@ -39,8 +38,8 @@
     "watch": "babel src -d dist --copy-files -w",
     "lint": "eslint .",
     "test": "NODE_ENV=test mocha --reporter spec $npm_package_options_mocha",
-    "test-cov": "NODE_ENV=test isparta cover --root dist --report html _mocha -- $npm_package_options_mocha",
-    "test-travis": "NODE_ENV=test isparta cover --root dist --report lcovonly _mocha -- $npm_package_options_mocha",
+    "test-cov": "NODE_ENV=test istanbul cover --root dist --report html _mocha -- $npm_package_options_mocha",
+    "test-travis": "NODE_ENV=test istanbul cover --root dist --report lcovonly _mocha -- $npm_package_options_mocha",
     "preversion": "npm run build"
   },
   "options": {
