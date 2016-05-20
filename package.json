@@ -20,9 +20,7 @@
     "eslint-plugin-babel": "^3.2.0",
     "istanbul": "^0.4.3",
     "mocha": "^2.4.5",
-    "opentracing": "^0.9.18",
-    "redis": "^2.6.0-2",
-    "shelljs": "^0.7.0",
+    "redis": "^0.12.1",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0"
   },
@@ -37,12 +35,12 @@
     "build": "babel src -d dist --copy-files",
     "watch": "babel src -d dist --copy-files -w",
     "lint": "eslint .",
-    "test": "NODE_ENV=test mocha --reporter spec $npm_package_options_mocha",
-    "test-cov": "NODE_ENV=test istanbul cover --root dist --report html _mocha -- $npm_package_options_mocha",
-    "test-travis": "NODE_ENV=test istanbul cover --root dist --report lcovonly _mocha -- $npm_package_options_mocha",
+    "test": "NODE_ENV=test mocha --reporter spec $npm_package_options_mocha 'dist/**/*.spec.js' 'dist/**/*.spec.e2e.js'",
+    "test-cov": "NODE_ENV=test istanbul cover --root dist --report html _mocha -- $npm_package_options_mocha 'dist/**/*.spec.js' 'dist/**/*.spec.e2e.js'",
+    "test-travis": "NODE_ENV=test istanbul cover --root dist --report lcovonly _mocha -- $npm_package_options_mocha 'dist/**/*.spec.js' 'dist/**/*.spec.e2e.js'",
     "preversion": "npm run build"
   },
   "options": {
-    "mocha": "--timeout 5000 --require ./resources/mocha-bootload --check-leaks --full-trace resources/setup.js dist/**/*.spec.js dist/**/*.spec.e2e.js"
+    "mocha": "--timeout 5000 --require ./resources/mocha-bootload --check-leaks --full-trace resources/setup.js"
   }
 }

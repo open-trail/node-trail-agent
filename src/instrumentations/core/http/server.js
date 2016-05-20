@@ -1,7 +1,9 @@
 'use strict'
 
+import os from 'os'
+import consts from '../../../consts'
+
 let debug = require('debug')('trail')
-let consts = require('../../../consts')
 
 function wrapListener(listener, client) {
     return function (request, response) {
@@ -9,6 +11,7 @@ function wrapListener(listener, client) {
         let headers = request.headers
 
         let span = client.start(requestUrl, client.FORMAT_TEXT_MAP, headers)
+        span.setTag('host', os.hostname())
         span.setTag('protocol', consts.PROTOCOLS.HTTP)
         debug('trace event (sr); request: %s', span.traceId, headers)
 

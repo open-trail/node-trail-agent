@@ -6,18 +6,16 @@ let sinonChai = require('sinon-chai')
 let dnode = require('dnode')
 
 const DNODE_PORT = 6470
-let proc
+let proc = spawn('./resources/dnode.js', [DNODE_PORT], {stdio: 'inherit'})
 let local
 
 before((done) => {
     chai.use(sinonChai)
-    proc = spawn('./resources/dnode.js', [DNODE_PORT], {stdio: 'inherit'})
     connect(done)
 })
 
 after(() => {
     local.end()
-    proc.kill('SIGTERM')
 })
 
 function connect(done) {
@@ -31,3 +29,7 @@ function connect(done) {
         setTimeout(connect.bind(null, done), 10)
     })
 }
+
+process.on('exit', () => {
+    proc.kill('SIGTERM')
+})

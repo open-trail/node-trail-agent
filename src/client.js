@@ -1,8 +1,6 @@
 
 'use strict'
 
-import os from 'os'
-
 import cls from 'continuation-local-storage'
 import {Tracer} from 'basictracer'
 
@@ -52,8 +50,6 @@ export default class TrailClient extends Tracer {
      */
     start(operationName, format, carrier) {
         let sessionSpan = this.join(operationName, format, carrier)
-        sessionSpan.setTag('host', os.hostname())
-
         this.ns.set(FIELD_SESSION_SPAN, sessionSpan)
         return sessionSpan
     }

@@ -1,8 +1,9 @@
 'use strict'
 
+import url from 'url'
+import consts from '../../../consts'
+
 let debug = require('debug')('trail')
-let url = require('url')
-let consts = require('../../../consts')
 
 function wrapRequest(originalHttpRequest, client) {
     return function wrappedRequest() {
@@ -24,6 +25,7 @@ function wrapRequest(originalHttpRequest, client) {
 
         let span = client.fork(requestParams.path, client.FORMAT_TEXT_MAP,
                                requestParams.headers)
+        span.setTag('host', requestParams.host || 'localhost')
         span.setTag('protocol', consts.PROTOCOLS.HTTP)
         debug('trace event (cs); reqId: %s, spanId: %s',
               span.traceId, span.spanId)
