@@ -8,8 +8,6 @@
 
 ## Usage
 
-See [tests](src/__tests__/client-test.js)
-
 ## License
 
 MIT

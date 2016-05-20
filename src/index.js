@@ -1,6 +1,9 @@
 'use strict'
 
 import TrailClient from './client'
-import tracer from 'basictracer'
+import Instrumentation from './instrumentations'
 
-module.exports = new TrailClient(tracer)
+let client = new TrailClient()
+Instrumentation.create({ client })
+
+module.exports = client

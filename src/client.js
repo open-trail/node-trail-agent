@@ -1,32 +1,37 @@
-'use strict'
-import cls from 'continuation-local-storage'
 
-export default class TrailClient {
-    constructor(tracer) {
-        this._tracer = tracer
-        this.FORMAT_BINARY = this._tracer.FORMAT_BINARY
-        this.FORMAT_TEXT_MAP = this._tracer.FORMAT_TEXT_MAP
+'use strict'
+
+import os from 'os'
+
+import cls from 'continuation-local-storage'
+import {Tracer} from 'basictracer'
+
+const FIELD_SESSION_SPAN = 'session_span'
+
+export default class TrailClient extends Tracer {
+
+    constructor() {
+        super()
 
         this.ns = cls.createNamespace('trail')
     }
 
-    configure(...args) {
-        this._tracer.configure.apply(this._tracer, args)
-    }
-
-    startSpan(...args) {
-        let span = this._tracer.startSpan.apply(this._tracer, args)
-        this.ns.set('currentSpan', span)
+    /**
+     * Handle super.join exception on currupt carrier.
+     *
+     * @override
+     */
+    join(operationName, format, carrier) {
+        let span
+        try {
+            span = super.join(operationName, format, carrier)
+        } catch (err) {
+            // Corrupt carrier OR root span will raise exception.
+            // Root span will raise exception because carrier don't have
+            // required fields: traceId, spanId, sampled
+            span = this.startSpan(operationName)
+        }
         return span
-    }
-    getCurrentSpan() {
-        return this.ns.get('currentSpan')
-    }
-    inject(...args) {
-        return this._tracer.inject.apply(this._tracer, args)
-    }
-    join(...args) {
-        return this._tracer.join.apply(this._tracer, args)
     }
 
     bind(fn) {
@@ -34,5 +39,49 @@ export default class TrailClient {
     }
     bindEmitter(emitter) {
         this.ns.bindEmitter(emitter)
+    }
+
+    /**
+     * Start new session.
+     * One session have one session span, and  multiple child spans.
+     *
+     * @param  {string} operationName
+     * @param  {string} format
+     * @param  {any} carrier
+     * @return {Span} Session span.
+     */
+    start(operationName, format, carrier) {
+        let sessionSpan = this.join(operationName, format, carrier)
+        sessionSpan.setTag('host', os.hostname())
+
+        this.ns.set(FIELD_SESSION_SPAN, sessionSpan)
+        return sessionSpan
+    }
+
+    /**
+     * Create new child span via session span.
+     *
+     * @param  {string} operationName
+     * @param  {string=} format The format of carrier if present.
+     * @param  {Object=} carrier Carrier to carry formated span.
+     * @return {Span} Child span.
+     */
+    fork(operationName, format, carrier) {
+        let sessionSpan = this.getSessionSpan()
+        let span = this.startSpan(operationName, {
+            parent: sessionSpan,
+        })
+        if (format && carrier) {
+            this.inject(span, format, carrier)
+        }
+        return span
+    }
+
+    getSessionSpan() {
+        let span = this.ns.get(FIELD_SESSION_SPAN)
+        if (!span) {
+            // TODO: report missing namespace context
+        }
+        return span
     }
 }

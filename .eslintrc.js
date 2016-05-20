@@ -2,7 +2,7 @@ module.exports = {
     "parser": "babel-eslint",
 
     "globals": {
-        "should": true
+        "remote": true
     },
 
     "plugins": [
@@ -177,7 +177,7 @@ module.exports = {
         "no-unexpected-multiline": 2,
         "no-unneeded-ternary": 2,
         "no-unreachable": 2,
-        "no-unused-expressions": 2,
+        "no-unused-expressions": 0,
         "no-unused-vars": [2, {"vars": "all", "args": "after-used"}],
         "no-use-before-define": 0,
         "no-useless-call": 2,
