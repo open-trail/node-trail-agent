@@ -17,6 +17,7 @@
     "babel-plugin-transform-es2015-parameters": "^6.8.0",
     "chai": "^3.5.0",
     "eslint-plugin-babel": "^3.2.0",
+    "ghooks": "^1.2.1",
     "istanbul": "^0.4.3",
     "mocha": "^2.4.5"
   },
@@ -27,16 +28,25 @@
     "debug": "^2.2.0"
   },
   "scripts": {
-    "debug": "mocha --debug-brk $npm_package_options_mocha",
+    "prebuild": "rm -rf dist",
     "build": "babel src -d dist --copy-files",
     "watch": "babel src -d dist --copy-files -w",
     "lint": "eslint .",
     "test": "NODE_ENV=test mocha --reporter spec $npm_package_options_mocha 'dist/**/*.spec.js'",
-    "test-cov": "NODE_ENV=test istanbul cover -x '**/*.spec.js' --root dist --report html _mocha -- $npm_package_options_mocha 'dist/**/*.spec.js'",
-    "test-travis": "NODE_ENV=test istanbul cover -x '**/*.spec.js' --root dist --report lcovonly _mocha -- $npm_package_options_mocha 'dist/**/*.spec.js'",
-    "preversion": "npm run build"
+    "test-cov": "NODE_ENV=test istanbul cover --report html _mocha -- $npm_package_options_mocha 'dist/**/*.spec.js'",
+    "test-travis": "NODE_ENV=test istanbul cover --report lcovonly _mocha -- $npm_package_options_mocha 'dist/**/*.spec.js'",
+    "prepublish": "npm run build",
+    "np": "resources/np"
   },
   "options": {
-    "mocha": "--require ./resources/mocha-bootload --check-leaks --full-trace"
+    "mocha": "--require resources/mocha-bootload --check-leaks --full-trace"
+  },
+  "config": {
+    "ghooks": {
+      "pre-commit": "npm run build && npm run lint && npm run test-cov"
+    },
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   }
 }
