@@ -33,10 +33,10 @@ export default class TrailClient extends Tracer {
     }
 
     bind(fn) {
-        this.ns.bind(fn)
+        return this.ns.bind(fn)
     }
     bindEmitter(emitter) {
-        this.ns.bindEmitter(emitter)
+        return this.ns.bindEmitter(emitter)
     }
 
     /**

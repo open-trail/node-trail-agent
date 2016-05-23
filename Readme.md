@@ -8,6 +8,12 @@
 
 ## Usage
 
+## Tests
+
+Import data schema from ./resources/schema, then
+
+    npm test
+
 ## License
 
 MIT
