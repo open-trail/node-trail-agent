@@ -2,14 +2,14 @@
 
 import {expect} from 'chai'
 import cls from 'continuation-local-storage'
-import TrailClient from './client'
+import TrailAgent from './agent'
 
-const OPERATION_NAME = 'trailclient-test'
+const OPERATION_NAME = 'trailagent-test'
 let debug = require('debug')('trail:tests')
 
-describe('client', () => {
-    let client = new TrailClient()
-    client.setRecorder(() => {})
+describe('agent', () => {
+    let agent = new TrailAgent()
+    agent.setRecorder(() => {})
     let ns = cls.getNamespace('trail')
 
     beforeEach((done) => {
@@ -17,31 +17,31 @@ describe('client', () => {
     })
 
     it('should start session with session span', (done) => {
-        let sessionSpan = client.start(OPERATION_NAME, client.FORMAT_TEXT_MAP,
+        let sessionSpan = agent.start(OPERATION_NAME, agent.FORMAT_TEXT_MAP,
                                        {})
         expect(sessionSpan.spanId.equals(sessionSpan.parentId)).to.be.true
         setTimeout(() => {
-            let span = client.getSessionSpan()
+            let span = agent.getSessionSpan()
             expect(span.spanId.equals(sessionSpan.spanId)).to.be.true
             done()
         }, 10)
     })
 
     it('should fork a child span', () => {
-        let sessionSpan = client.start(OPERATION_NAME, client.FORMAT_TEXT_MAP,
+        let sessionSpan = agent.start(OPERATION_NAME, agent.FORMAT_TEXT_MAP,
                                        {})
-        let childSpan = client.fork(OPERATION_NAME)
+        let childSpan = agent.fork(OPERATION_NAME)
         expect(childSpan.parentId.equals(sessionSpan.spanId)).to.be.true
     })
 
     it('should fork a child span with carrier', () => {
-        let sessionSpan = client.start(OPERATION_NAME, client.FORMAT_TEXT_MAP,
+        let sessionSpan = agent.start(OPERATION_NAME, agent.FORMAT_TEXT_MAP,
                                        {})
         let carrier = {}
-        let childSpan = client.fork(OPERATION_NAME, client.FORMAT_TEXT_MAP,
+        let childSpan = agent.fork(OPERATION_NAME, agent.FORMAT_TEXT_MAP,
                                     carrier)
-        let spanInNewSession = client.join(OPERATION_NAME,
-                                           client.FORMAT_TEXT_MAP, carrier)
+        let spanInNewSession = agent.join(OPERATION_NAME,
+                                           agent.FORMAT_TEXT_MAP, carrier)
         expect(childSpan.parentId.equals(sessionSpan.spanId)).to.be.true
         expect(spanInNewSession.parentId.equals(childSpan.spanId)).to.be.true
         expect(Object.keys(carrier).length).to.eql(3)
@@ -58,8 +58,8 @@ describe('client', () => {
             return new Promise((resolve) => {
                 ns.run(() => {
                     debug('preHandler start', param, ns)
-                    let sessionSpan = client.start(OPERATION_NAME,
-                                                   client.FORMAT_TEXT_MAP, {})
+                    let sessionSpan = agent.start(OPERATION_NAME,
+                                                   agent.FORMAT_TEXT_MAP, {})
                     sessionSpan.log('param', param)
                     resolve(param)
                 })
@@ -68,7 +68,7 @@ describe('client', () => {
         function postHandler(param) {
             return new Promise((resolve) => {
                 debug('postHandler start', param, ns)
-                let sessionSpan = client.getSessionSpan()
+                let sessionSpan = agent.getSessionSpan()
                 sessionSpan.finish()
                 debug('postHandler end', param, ns)
                 resolve([sessionSpan.logs[0].payload, param])

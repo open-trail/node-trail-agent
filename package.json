@@ -1,7 +1,7 @@
 {
-  "name": "trail-client",
-  "description": "Distributed tracing client for Node.js",
-  "repository": "CatTail/node-trail-client",
+  "name": "trail-agent",
+  "description": "Distributed tracing agent for Node.js",
+  "repository": "CatTail/node-trail-agent",
   "version": "0.2.0",
   "main": "dist/index.js",
   "keywords": [],
@@ -16,14 +16,9 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.8.0",
     "babel-plugin-transform-es2015-parameters": "^6.8.0",
     "chai": "^3.5.0",
-    "dnode": "^1.2.2",
     "eslint-plugin-babel": "^3.2.0",
     "istanbul": "^0.4.3",
-    "mocha": "^2.4.5",
-    "mysql": "^2.10.2",
-    "redis": "^0.12.1",
-    "sinon": "^1.17.4",
-    "sinon-chai": "^2.8.0"
+    "mocha": "^2.4.5"
   },
   "license": "MIT",
   "dependencies": {
@@ -36,12 +31,12 @@
     "build": "babel src -d dist --copy-files",
     "watch": "babel src -d dist --copy-files -w",
     "lint": "eslint .",
-    "test": "NODE_ENV=test mocha --reporter spec $npm_package_options_mocha 'dist/**/*.spec.js' 'dist/**/*.spec.e2e.js'",
-    "test-cov": "NODE_ENV=test istanbul cover --root dist --report html _mocha -- $npm_package_options_mocha 'dist/**/*.spec.js' 'dist/**/*.spec.e2e.js'",
-    "test-travis": "NODE_ENV=test istanbul cover --root dist --report lcovonly _mocha -- $npm_package_options_mocha 'dist/**/*.spec.js' 'dist/**/*.spec.e2e.js'",
+    "test": "NODE_ENV=test mocha --reporter spec $npm_package_options_mocha 'dist/**/*.spec.js'",
+    "test-cov": "NODE_ENV=test istanbul cover -x '**/*.spec.js' --root dist --report html _mocha -- $npm_package_options_mocha 'dist/**/*.spec.js'",
+    "test-travis": "NODE_ENV=test istanbul cover -x '**/*.spec.js' --root dist --report lcovonly _mocha -- $npm_package_options_mocha 'dist/**/*.spec.js'",
     "preversion": "npm run build"
   },
   "options": {
-    "mocha": "--timeout 5000 --require ./resources/mocha-bootload --check-leaks --full-trace resources/setup.js"
+    "mocha": "--require ./resources/mocha-bootload --check-leaks --full-trace"
   }
 }

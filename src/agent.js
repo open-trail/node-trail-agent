@@ -6,7 +6,7 @@ import {Tracer} from 'basictracer'
 
 const FIELD_SESSION_SPAN = 'session_span'
 
-export default class TrailClient extends Tracer {
+export default class TrailAgent extends Tracer {
 
     constructor() {
         super()
