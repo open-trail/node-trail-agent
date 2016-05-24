@@ -15,7 +15,7 @@ Install other instrument libraries
 Initialize agent
 
     var agent = require('trail-agent')
-    agent.instrument(['http'])
+    agent.instrument(['trail-instrument-http'])
     agent.setRecorder((span) => {
         console.log(span)
     })

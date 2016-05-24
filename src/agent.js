@@ -15,13 +15,7 @@ export default class TrailAgent extends Tracer {
 
     instrument(libs) {
         libs.forEach((lib) => {
-            let mod
-            try {
-                mod = require(`trail-instrument-${lib}`)
-            } catch (err) {
-                mod = require(lib)
-            }
-            mod.wrap(this)
+            require(lib).wrap(this)
         })
     }
 
