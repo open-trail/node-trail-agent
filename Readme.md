@@ -8,6 +8,27 @@
 
 ## Usage
 
+Install other instrument libraries
+
+    npm install --save trail-instrument-http
+
+Initialize agent
+
+    var agent = require('trail-agent')
+    agent.instrument(['http'])
+    agent.setRecorder((span) => {
+        console.log(span)
+    })
+
+Record in anywhere else
+
+    var agent = require('trail-agent')
+    let span = agent.start()
+    setTimeout(() => {
+        span.tag('key', 'value')
+        span.finish()
+    })
+
 ## Development
 
 Install global dependencies
