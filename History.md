@@ -1,3 +1,8 @@
+<a name="0.4.1"></a>
+## [0.4.1](https://github.com/cattail/node-trail-agent/compare/v0.4.0...v0.4.1) (2016-05-24)
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/cattail/node-trail-agent/compare/v0.2.1...v0.4.0) (2016-05-24)
 
