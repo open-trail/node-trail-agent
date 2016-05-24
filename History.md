@@ -1,3 +1,18 @@
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/cattail/node-trail-agent/compare/v0.2.1...v0.4.0) (2016-05-24)
+
+
+### Bug Fixes
+
+* instrument not working with module name ([304945d](https://github.com/cattail/node-trail-agent/commit/304945d))
+
+
+### Features
+
+* support instrument list of libraries ([648ac47](https://github.com/cattail/node-trail-agent/commit/648ac47))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/cattail/node-trail-agent/compare/v0.2.1...v0.3.0) (2016-05-24)
 
