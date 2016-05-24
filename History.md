@@ -1,3 +1,13 @@
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/cattail/node-trail-agent/compare/v0.2.1...v0.3.0) (2016-05-24)
+
+
+### Features
+
+* support instrument list of libraries ([648ac47](https://github.com/cattail/node-trail-agent/commit/648ac47))
+
+
+
 <a name="0.2.1"></a>
 ## [0.2.1](https://github.com/cattail/node-trail-agent/compare/v0.1.0...v0.2.1) (2016-05-23)
 
