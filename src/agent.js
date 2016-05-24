@@ -10,8 +10,21 @@ export default class TrailAgent extends Tracer {
 
     constructor() {
         super()
-
         this.ns = cls.createNamespace('trail')
+    }
+
+    instrument(libs) {
+        libs.forEach((lib) => {
+            lib.wrap(this)
+        })
+    }
+
+    bind(fn) {
+        return this.ns.bind(fn)
+    }
+
+    bindEmitter(emitter) {
+        return this.ns.bindEmitter(emitter)
     }
 
     /**
@@ -30,13 +43,6 @@ export default class TrailAgent extends Tracer {
             span = this.startSpan(operationName)
         }
         return span
-    }
-
-    bind(fn) {
-        return this.ns.bind(fn)
-    }
-    bindEmitter(emitter) {
-        return this.ns.bindEmitter(emitter)
     }
 
     /**
