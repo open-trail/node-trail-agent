@@ -1,3 +1,13 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/cattail/node-trail-agent/compare/v0.4.1...v1.0.0) (2016-05-25)
+
+
+### Features
+
+* instrument via Module._load hook ([87fc874](https://github.com/cattail/node-trail-agent/commit/87fc874))
+
+
+
 <a name="0.4.1"></a>
 ## [0.4.1](https://github.com/cattail/node-trail-agent/compare/v0.4.0...v0.4.1) (2016-05-24)
 
