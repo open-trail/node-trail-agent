@@ -1,11 +1,16 @@
 'use strict'
 
-import {expect} from 'chai'
+import chai, {expect} from 'chai'
+import sinon from 'sinon'
+import sinonChai from 'sinon-chai'
 import cls from 'continuation-local-storage'
+import shimmer from 'trail-shimmer'
+
 import TrailAgent from './agent'
 
 const OPERATION_NAME = 'trailagent-test'
-let debug = require('debug')('trail:tests')
+const debug = require('debug')('trail:tests')
+chai.use(sinonChai)
 
 describe('agent', () => {
     let agent = new TrailAgent()
@@ -107,5 +112,26 @@ describe('agent', () => {
             procedure('AAA', [10, 10]),
             procedure('BBB', [15, 10]),
         ])
+    })
+
+    it('should instrument core libraries automatically', () => {
+        let http = require('http')
+        expect(http.request.__TR_unwrap).to.not.be.undefined
+    })
+
+    it('should instrument other libraries', () => {
+        let redis = require('redis')
+        expect(redis.RedisClient.prototype.send_command.__TR_unwrap).to.be.undefined // eslint-disable-line
+        agent.instrument(['trail-instrument-redis'])
+        redis = require('redis')
+        expect(redis.RedisClient.prototype.send_command.__TR_unwrap).to.not.be.undefined // eslint-disable-line
+    })
+
+    it('should instrument and only instrument library once', () => {
+        let sandbox = sinon.sandbox.create()
+        sandbox.stub(shimmer, 'wrap')
+        agent.instrument(['trail-instrument-redis'])
+        expect(shimmer.wrap).to.be.callCount(0)
+        sandbox.restore()
     })
 })

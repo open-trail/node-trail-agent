@@ -1,22 +1,51 @@
-
 'use strict'
 
-import cls from 'continuation-local-storage'
-import {Tracer} from 'basictracer'
+import Module from 'module'
 
+import {Tracer} from 'basictracer'
+import cls from 'continuation-local-storage'
+import shimmer from 'trail-shimmer'
+
+const CORE_INSTRUMENTS = ['trail-instrument-http']
 const FIELD_SESSION_SPAN = 'session_span'
+const MODULE_INSTRUMENTED = '__instrumentedByTrail'
 
 export default class TrailAgent extends Tracer {
-
     constructor() {
         super()
+
         this.ns = cls.createNamespace('trail')
+
+        this.instrumentedLibs = {}
+        this.instrument(CORE_INSTRUMENTS)
+        let self = this
+        shimmer.wrap(Module, 'Module', '_load', function (load) {
+            return function (file) {
+                let mod = load.apply(this, arguments)
+
+                self._instrument(file, mod)
+
+                return mod
+            }
+        })
     }
 
     instrument(libs) {
         libs.forEach((lib) => {
-            require(lib).wrap(this)
+            let wrapper = require(lib)
+            if (!wrapper.target) {
+                throw new Error(`Expect module ${lib} have "target" field`)
+            }
+            this.instrumentedLibs[wrapper.target] = wrapper
         })
+    }
+    _instrument(target, mod) {
+        // require instrument and not instrumented
+        if (this.instrumentedLibs[target] && !mod[MODULE_INSTRUMENTED]) {
+            mod[MODULE_INSTRUMENTED] = true
+            let wrapper = this.instrumentedLibs[target]
+            wrapper.wrap(this, mod)
+        }
     }
 
     bind(fn) {
