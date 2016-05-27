@@ -45,6 +45,10 @@ Publish module
 
     npm run np
 
+## Issues
+
+* Time synchronize across devices
+
 ## License
 
 MIT

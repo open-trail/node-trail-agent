@@ -28,6 +28,7 @@ describe('agent', () => {
         setTimeout(() => {
             let span = agent.getSessionSpan()
             expect(span.spanId.equals(sessionSpan.spanId)).to.be.true
+            expect(sessionSpan.tags.type).to.eql('ServerReceive')
             done()
         }, 10)
     })
@@ -37,6 +38,7 @@ describe('agent', () => {
                                        {})
         let childSpan = agent.fork(OPERATION_NAME)
         expect(childSpan.parentId.equals(sessionSpan.spanId)).to.be.true
+        expect(childSpan.tags.type).to.eql('ClientSend')
     })
 
     it('should fork a child span with carrier', () => {

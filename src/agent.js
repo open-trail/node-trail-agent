@@ -86,6 +86,7 @@ export default class TrailAgent extends Tracer {
     start(operationName, format, carrier) {
         let sessionSpan = this.join(operationName, format, carrier)
         this.ns.set(FIELD_SESSION_SPAN, sessionSpan)
+        sessionSpan.setTag('type', 'ServerReceive')
         return sessionSpan
     }
 
@@ -102,6 +103,7 @@ export default class TrailAgent extends Tracer {
         let span = this.startSpan(operationName, {
             parent: sessionSpan,
         })
+        span.setTag('type', 'ClientSend')
         if (format && carrier) {
             this.inject(span, format, carrier)
         }
