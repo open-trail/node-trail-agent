@@ -1,3 +1,13 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/cattail/node-trail-agent/compare/v1.0.0...v1.1.0) (2016-05-27)
+
+
+### Features
+
+* add "type" tag to distinguish client and server span ([bf1ac62](https://github.com/cattail/node-trail-agent/commit/bf1ac62))
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/cattail/node-trail-agent/compare/v0.4.1...v1.0.0) (2016-05-25)
 
