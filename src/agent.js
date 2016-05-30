@@ -73,9 +73,11 @@ export default class TrailAgent extends Tracer {
 
     /**
      * Expose continuation-local-storage `namespace.bind` method.
+     *
+     * @return {Function} Wrapper function.
      */
     bind(fn) {
-        this.ns.bind(fn)
+        return this.ns.bind(fn)
     }
     /**
      * Expose continuation-local-storage `namespace.bindEmitter` method.
