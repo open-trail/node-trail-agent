@@ -1,9 +1,9 @@
 'use strict'
 
 import chai, {expect} from 'chai'
+import cls from 'continuation-local-storage'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import cls from 'continuation-local-storage'
 import shimmer from 'trail-shimmer'
 
 import TrailAgent from './agent'
@@ -15,7 +15,7 @@ chai.use(sinonChai)
 describe('agent', () => {
     let agent = new TrailAgent()
     agent.setRecorder(() => {})
-    let ns = cls.getNamespace('trail')
+    let ns = cls.getNamespace(agent.NAMESPACE)
 
     beforeEach((done) => {
         ns.run(() => done())

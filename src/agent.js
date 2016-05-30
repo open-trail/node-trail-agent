@@ -11,53 +11,85 @@ const FIELD_SESSION_SPAN = 'session_span'
 const MODULE_INSTRUMENTED = '__instrumentedByTrail'
 
 export default class TrailAgent extends Tracer {
+
     constructor() {
         super()
 
-        this.ns = cls.createNamespace('trail')
+        const NAMESPACE = 'trail'
+        this.NAMESPACE = NAMESPACE
+        this.ns = cls.createNamespace(NAMESPACE)
+        this._instruments = {}
 
-        this.instrumentedLibs = {}
+        this._hookModuleLoad()
         this.instrument(CORE_INSTRUMENTS)
-        let self = this
-        shimmer.wrap(Module, 'Module', '_load', function (load) {
-            return function (file) {
-                let mod = load.apply(this, arguments)
-
-                self._instrument(file, mod)
-
-                return mod
-            }
-        })
     }
 
+    /**
+     * Install list of instrumenting modules.
+     *
+     *     var agent = require('trail-agent')
+     *     agent.instrument['trail-instrument-http']
+     *
+     * @param  {Array.<string>} libs List of instrumenting modules.
+     */
     instrument(libs) {
         libs.forEach((lib) => {
             let wrapper = require(lib)
             if (!wrapper.target) {
                 throw new Error(`Expect module ${lib} have "target" field`)
             }
-            this.instrumentedLibs[wrapper.target] = wrapper
+            this._instruments[wrapper.target] = wrapper
         })
     }
+    /**
+     * Instrument module.
+     *
+     * @param  {string} target Target module name.
+     * @param  {*}      mod    Target module.
+     */
     _instrument(target, mod) {
-        // require instrument and not instrumented
-        if (this.instrumentedLibs[target] && !mod[MODULE_INSTRUMENTED]) {
-            mod[MODULE_INSTRUMENTED] = true
-            let wrapper = this.instrumentedLibs[target]
-            wrapper.wrap(this, mod)
-        }
+        let wrapper = this._instruments[target]
+        wrapper.wrap(this, mod)
     }
+    /**
+     * Wrap Module._load to instrument target library.
+     */
+    _hookModuleLoad() {
+        let self = this
+        shimmer.wrap(Module, 'Module', '_load', function (load) {
+            return function (file) {
+                let mod = load.apply(this, arguments)
 
-    bind(fn) {
-        return this.ns.bind(fn)
-    }
+                // require instrument and not instrumented
+                if (self._instruments[file] && !mod[MODULE_INSTRUMENTED]) {
+                    mod[MODULE_INSTRUMENTED] = true
+                    self._instrument(file, mod)
+                }
 
-    bindEmitter(emitter) {
-        return this.ns.bindEmitter(emitter)
+                return mod
+            }
+        })
     }
 
     /**
-     * Handle super.join exception on currupt carrier.
+     * Expose continuation-local-storage `namespace.bind` method.
+     */
+    bind(fn) {
+        this.ns.bind(fn)
+    }
+    /**
+     * Expose continuation-local-storage `namespace.bindEmitter` method.
+     */
+    bindEmitter(emitter) {
+        this.ns.bindEmitter(emitter)
+    }
+
+    /**
+     * Handle super.join exception.
+     *
+     * Corrupt carrier OR root span will raise exception. Root span will raise
+     * exception because carrier don't have required fields: traceId, spanId,
+     * sampled.
      *
      * @override
      */
@@ -66,17 +98,14 @@ export default class TrailAgent extends Tracer {
         try {
             span = super.join(operationName, format, carrier)
         } catch (err) {
-            // Corrupt carrier OR root span will raise exception.
-            // Root span will raise exception because carrier don't have
-            // required fields: traceId, spanId, sampled
             span = this.startSpan(operationName)
         }
         return span
     }
 
     /**
-     * Start new session.
-     * One session have one session span, and  multiple child spans.
+     * Start new session. One session have one session span, and multiple child
+     * spans. Session span has tag `ServerReceive`.
      *
      * @param  {string} operationName
      * @param  {string} format
@@ -91,7 +120,8 @@ export default class TrailAgent extends Tracer {
     }
 
     /**
-     * Create new child span via session span.
+     * Create new child span via session span. The child span has tag
+     * `ClientSend`.
      *
      * @param  {string} operationName
      * @param  {string=} format The format of carrier if present.
@@ -110,10 +140,14 @@ export default class TrailAgent extends Tracer {
         return span
     }
 
+    /**
+     * Get current session span.
+     * @return {Span}
+     */
     getSessionSpan() {
         let span = this.ns.get(FIELD_SESSION_SPAN)
         if (!span) {
-            // TODO: report missing namespace context
+            span = this.startSpan('MissingContextSpan')
         }
         return span
     }

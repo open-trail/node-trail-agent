@@ -10,12 +10,12 @@
 
 Install other instrument libraries
 
-    npm install --save trail-instrument-http
+    npm install --save trail-instrument-redis
 
 Initialize agent
 
     var agent = require('trail-agent')
-    agent.instrument(['trail-instrument-http'])
+    agent.instrument(['trail-instrument-redis'])
     agent.setRecorder((span) => {
         console.log(span)
     })
@@ -25,29 +25,19 @@ Record in anywhere else
     var agent = require('trail-agent')
     let span = agent.start()
     setTimeout(() => {
-        span.tag('key', 'value')
+        span.setTag('key', 'value')
         span.finish()
     })
 
-## Development
+## Instrument library
 
-Install global dependencies
+To instrument library, you should provide a module with
 
-    npm install -g commitizen cz-conventional-changelog trash-cli conventional-recommended-bump conventional-changelog-cli conventional-github-releaser conventional-commits-detector json
-
-Setup environment variable `CONVENTIONAL_GITHUB_RELEASER_TOKEN`
-
-Commit changes (provided by commitizen)
-
-    git cz
-
-Publish module
-
-    npm run np
-
-## Issues
-
-* Time synchronize across devices
+* `target`: indicate targeting module name.
+* `wrap(agent, module)`: method with trail-agent instance and target module as
+    arguments, return wrapped module.
+* `unwrap()`: method to unwrap method wrapped by `wrap()`, intention of this
+    method is unwrap method in tests.
 
 ## License
 

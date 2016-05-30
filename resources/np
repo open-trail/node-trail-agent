@@ -1,6 +1,7 @@
 #! /bin/bash
 
 # https://gist.github.com/stevemao/280ef22ee861323993a0
+# npm install -g commitizen cz-conventional-changelog trash-cli conventional-recommended-bump conventional-changelog-cli conventional-commits-detector json
 trash node_modules &>/dev/null;
 git pull --rebase &&
 npm install &&
@@ -18,5 +19,4 @@ git commit -m"docs(CHANGELOG): $version" &&
 mv -f _package.json package.json &&
 npm version ${1:-$bump} -m "chore(release): %s" &&
 git push --follow-tags &&
-conventional-github-releaser -p ${2:-$preset} &&
 npm publish
