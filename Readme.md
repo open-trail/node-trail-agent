@@ -39,13 +39,19 @@ To instrument library, you should provide a module with
 * `unwrap()`: method to unwrap method wrapped by `wrap()`, intention of this
     method is unwrap method in tests.
 
+Common tags
+
+* protocol
+* host
+* status
+
 ## License
 
 MIT
 
 [npm-image]: https://img.shields.io/npm/v/trail-agent.svg?style=flat
 [npm-url]: https://npmjs.org/package/trail-agent
-[travis-image]: https://img.shields.io/travis/CatTail/node-trail-agent.svg?style=flat
-[travis-url]: https://travis-ci.org/CatTail/node-trail-agent
-[coveralls-image]: https://img.shields.io/coveralls/CatTail/node-trail-agent.svg?style=flat
-[coveralls-url]: https://coveralls.io/r/CatTail/node-trail-agent?branch=master
+[travis-image]: https://img.shields.io/travis/open-trail/node-trail-agent.svg?style=flat
+[travis-url]: https://travis-ci.org/open-trail/node-trail-agent
+[coveralls-image]: https://img.shields.io/coveralls/open-trail/node-trail-agent.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/open-trail/node-trail-agent?branch=master
